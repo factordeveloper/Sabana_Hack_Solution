@@ -5,9 +5,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const messageInput = document.getElementById('message-input');
     const sendMessage = document.getElementById('send-message');
     const chatMessages = document.getElementById('chat-messages');
-    const recordButton = document.getElementById('record-button'); // Botón de grabación
-    let mediaRecorder;
-    let audioChunks = [];
+    const recordButton = document.getElementById('record-button');
+    let recognition; // Variable para SpeechRecognition
 
     // Toggle chat window
     chatbotToggle.addEventListener('click', function() {
@@ -23,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function() {
     async function sendUserMessage(message) {
         // Add user message
         addMessage(message, 'user-message');
-        
+
         // Call API to get response
         const response = await fetch('http://127.0.0.1:8000/recommendations', {
             method: 'POST',
@@ -67,33 +66,33 @@ document.addEventListener('DOMContentLoaded', function() {
         window.speechSynthesis.speak(speech);
     }
 
-    // Grabación de audio
-    recordButton.addEventListener('click', async function() {
-        if (!mediaRecorder || mediaRecorder.state === 'inactive') {
-            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-            mediaRecorder = new MediaRecorder(stream);
+    // Inicializar SpeechRecognition
+    if ('webkitSpeechRecognition' in window) {
+        recognition = new webkitSpeechRecognition();
+        recognition.lang = 'es-ES'; // Establecer el idioma
+        recognition.interimResults = false; // No resultados intermedios
+        recognition.maxAlternatives = 1; // Máximo de alternativas
 
-            mediaRecorder.ondataavailable = function(event) {
-                audioChunks.push(event.data);
-            };
+        recognition.onresult = function(event) {
+            const message = event.results[0][0].transcript;
+            sendUserMessage(message); // Envía el mensaje reconocido
+        };
 
-            mediaRecorder.onstop = async function() {
-                const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
-                const reader = new FileReader();
-                reader.onload = function() {
-                    const message = reader.result; // Aquí puedes procesar el audio si lo necesitas
-                    // Convertir audio a texto usando una API o servicio aquí (no incluido)
-                    // Llamar a sendUserMessage con el texto resultante
-                };
-                reader.readAsDataURL(audioBlob);
-                audioChunks = []; // Limpiar
-            };
+        recognition.onerror = function(event) {
+            console.error('Error en el reconocimiento de voz: ', event.error);
+        };
+    } else {
+        console.warn('Speech Recognition no es soportado en este navegador.');
+    }
 
-            mediaRecorder.start();
+    // Grabación de audio al hacer clic en el botón
+    recordButton.addEventListener('click', function() {
+        if (recognition) {
+            recognition.start(); // Iniciar reconocimiento
             recordButton.textContent = "Detener grabación";
-        } else {
-            mediaRecorder.stop();
-            recordButton.textContent = "Grabar audio";
+            recognition.onend = function() {
+                recordButton.textContent = "Grabar audio"; // Cambiar el texto al detener
+            };
         }
     });
 });
