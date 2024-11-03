@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', function() {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ message }),
+            body: JSON.stringify({ user_input: message }), // Cambiado a user_input
         });
 
         const data = await response.json();

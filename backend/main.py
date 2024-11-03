@@ -47,9 +47,18 @@ def get_huggingface_model_response(user_input: str) -> str:
             json={"inputs": user_input}
         )
         response.raise_for_status()  # Lanza un error si la respuesta no es 200
-        return response.json().get("generated_text", "No tengo una respuesta en este momento.")
+
+        # Verifica si la respuesta es una lista y obtiene el primer elemento
+        result = response.json()
+        if isinstance(result, list) and len(result) > 0:
+            return result[0].get("generated_text", "No tengo una respuesta en este momento.")
+        elif isinstance(result, dict):
+            return result.get("generated_text", "No tengo una respuesta en este momento.")
+        else:
+            return "No tengo una respuesta en este momento."
     except Exception as e:
         return f"Error al conectar con el modelo de Hugging Face: {str(e)}"
+
 
 @app.post("/recommendations", response_model=RecommendationResponse)
 async def get_recommendations(request: RecommendationRequest):
