@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beauty Store</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <img class="logo" src="images/logooo.png" alt="Logo">
+        </nav>
+    </header>
+
+    <main class="hero">
+        <h1>Descubre tu belleza</h1>
+        <div class="brands-container">
+            <div class="brand-card">
+                <img src="images/image1.jpg" alt="Esika modelo">
+            </div>
+            <div class="brand-card">
+                <img src="images/image2.jpg" alt="L'BEL modelo">
+            </div>
+            <div class="brand-card">
+                <img src="images/image3.jpg" alt="Cyzone modelo">
+            </div>
+        </div>
+    </main>
+
+    <!-- Chatbot actualizado -->
+    <div class="chatbot-container">
+        <div class="consultora" id="chatbot-toggle">
+            <img src="images/consultoraaaa.png" alt="Consultora virtual">
+        </div>
+        <div class="chat-window" id="chat-window">
+            <div class="chat-header">
+                <span>Chat con BeautyBot</span>
+                <button style="background: none; border: none; color: white; cursor: pointer;" id="close-chat">✕</button>
+            </div>
+            <div class="chat-messages" id="chat-messages">
+                <div class="message bot-message">
+                    ¡Hola! ¿En qué puedo ayudarte hoy?
+                </div>
+            </div>
+            <div class="chat-input">
+                <button id="record-button">Grabar</button>
+                <input type="text" id="message-input" placeholder="Escribe tu mensaje...">
+                <button id="send-message">Enviar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="fun.js"></script>
+   
+</body>
+</html>
